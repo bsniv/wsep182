@@ -6,7 +6,7 @@ module.exports = {
 
     get: function(type,item){
         if(type === 'Product'){
-            return Product.get();
+            return Product.get(item);
         }
         return new Promise((resolve,reject)=>{
             resolve(item);
