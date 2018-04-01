@@ -3,10 +3,17 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var crypto = require('crypto');
 
-var indexRouter = require('./routes/index');
+var generate_key = function() {
+    var sha = crypto.createHash('sha256');
+    sha.update(Math.random().toString());
+    return sha.digest('hex');
+};
+
 var usersRouter = require('./routes/users');
 var storeRouter = require('./routes/store');
+var cartRouter = require('./routes/cart');
 
 
 var app = express();
@@ -21,9 +28,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/users', usersRouter);
+app.use(function(req,res,next){
+    if(req.cookies.session==undefined){
+        key=generate_key();
+        res.cookie('session', key, {maxAge: 900000, httpOnly: true});
+        req.cookies.session=key;
+    }
+    next();
+});
 
+app.use('/users', usersRouter);
 app.use('/store',storeRouter);
+app.use('/userCart',cartRouter);
 
 
 // catch 404 and forward to error handler
