@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="DataBase.db [3]">
+  <database-model serializer="dbm" rdbms="SQLITE" format-version="4.7">
+    <root id="1"/>
+    <schema id="2" parent="1" name="main">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <collation id="3" parent="1" name="BINARY"/>
+    <collation id="4" parent="1" name="NOCASE"/>
+    <collation id="5" parent="1" name="RTRIM"/>
+    <table id="6" parent="2" name="BuyHistory"/>
+    <table id="7" parent="2" name="Discount"/>
+    <table id="8" parent="2" name="Product"/>
+    <table id="9" parent="2" name="ProductInStore"/>
+    <table id="10" parent="2" name="Sales"/>
+    <table id="11" parent="2" name="Session"/>
+    <table id="12" parent="2" name="Store"/>
+    <table id="13" parent="2" name="StoreOwners"/>
+    <table id="14" parent="2" name="StroreManager"/>
+    <table id="15" parent="2" name="UserCart"/>
+    <table id="16" parent="2" name="Users"/>
+    <table id="17" parent="2" name="sqlite_master">
+      <System>1</System>
+    </table>
+    <table id="18" parent="2" name="sqlite_sequence">
+      <System>1</System>
+    </table>
+    <column id="19" parent="6" name="buyId">
+      <Position>1</Position>
+      <DataType>Integer|0s</DataType>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="20" parent="6" name="productId">
+      <Position>2</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="21" parent="6" name="storeId">
+      <Position>3</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="22" parent="6" name="date">
+      <Position>4</Position>
+      <DataType>varchar(30)|0s</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="23" parent="6" name="productGrade">
+      <Position>5</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="24" parent="6" name="storeGrade">
+      <Position>6</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="25" parent="6" name="comment">
+      <Position>7</Position>
+      <DataType>varchar|0s</DataType>
+    </column>
+    <key id="26" parent="6">
+      <ColNames>buyId</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="27" parent="6">
+      <ColNames>productId</ColNames>
+      <RefTableName>Product</RefTableName>
+      <RefColNames>productId</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <foreign-key id="28" parent="6">
+      <ColNames>storeId</ColNames>
+      <RefTableName>Store</RefTableName>
+      <RefColNames>storeId</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <column id="29" parent="7" name="productInStore">
+      <Position>1</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="30" parent="7" name="amountInPrecent">
+      <Position>2</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <index id="31" parent="7" name="sqlite_autoindex_Discount_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>productInStore
+amountInPrecent</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="32" parent="7" name="PKdiscount">
+      <ColNames>productInStore
+amountInPrecent</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_Discount_1</UnderlyingIndexName>
+    </key>
+    <foreign-key id="33" parent="7">
+      <ColNames>productInStore</ColNames>
+      <RefTableName>ProductInStore</RefTableName>
+      <RefColNames>productInStore</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <column id="34" parent="8" name="productId">
+      <Position>1</Position>
+      <DataType>Integer|0s</DataType>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="35" parent="8" name="ProductName">
+      <Position>2</Position>
+      <DataType>varchar(10)|0s</DataType>
+    </column>
+    <column id="36" parent="8" name="basePrice">
+      <Position>3</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <index id="37" parent="8" name="sqlite_autoindex_Product_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>ProductName</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="38" parent="8">
+      <ColNames>productId</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="39" parent="8">
+      <ColNames>ProductName</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_Product_1</UnderlyingIndexName>
+    </key>
+    <column id="40" parent="9" name="productInStoreId">
+      <Position>1</Position>
+      <DataType>Integer|0s</DataType>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="41" parent="9" name="productId">
+      <Position>2</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="42" parent="9" name="storeId">
+      <Position>3</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="43" parent="9" name="storePrice">
+      <Position>4</Position>
+      <DataType>Real|0s</DataType>
+    </column>
+    <column id="44" parent="9" name="amount">
+      <Position>5</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="45" parent="9" name="isActive">
+      <Position>6</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <key id="46" parent="9">
+      <ColNames>productInStoreId</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="47" parent="9">
+      <ColNames>productId</ColNames>
+      <RefTableName>Product</RefTableName>
+      <RefColNames>productId</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <foreign-key id="48" parent="9">
+      <ColNames>storeId</ColNames>
+      <RefTableName>Store</RefTableName>
+      <RefColNames>storeId</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <column id="49" parent="10" name="saleId">
+      <Position>1</Position>
+      <DataType>Integer|0s</DataType>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="50" parent="10" name="productInStoreId">
+      <Position>2</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="51" parent="10" name="kind">
+      <Position>3</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <key id="52" parent="10">
+      <ColNames>saleId</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="53" parent="10">
+      <ColNames>productInStoreId</ColNames>
+      <RefTableName>ProductInStore</RefTableName>
+      <RefColNames>productInStoreId</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <column id="54" parent="11" name="userName">
+      <Position>1</Position>
+      <DataType>varchar(15)|0s</DataType>
+    </column>
+    <column id="55" parent="11" name="cookies">
+      <Position>2</Position>
+      <DataType>varchar|0s</DataType>
+    </column>
+    <index id="56" parent="11" name="sqlite_autoindex_Session_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>cookies</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="57" parent="11">
+      <ColNames>cookies</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_Session_1</UnderlyingIndexName>
+    </key>
+    <foreign-key id="58" parent="11">
+      <ColNames>userName</ColNames>
+      <RefTableName>Users</RefTableName>
+      <RefColNames>userName</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <column id="59" parent="12" name="storeId">
+      <Position>1</Position>
+      <DataType>Integer|0s</DataType>
+      <SequenceIdentity>1</SequenceIdentity>
+    </column>
+    <column id="60" parent="12" name="storeName">
+      <Position>2</Position>
+      <DataType>varchar(15)|0s</DataType>
+    </column>
+    <column id="61" parent="12" name="isActive">
+      <Position>3</Position>
+      <DataType>Integer|0s</DataType>
+      <DefaultExpression>1</DefaultExpression>
+    </column>
+    <index id="62" parent="12" name="sqlite_autoindex_Store_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>storeName</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="63" parent="12">
+      <ColNames>storeId</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <key id="64" parent="12">
+      <ColNames>storeName</ColNames>
+      <UnderlyingIndexName>sqlite_autoindex_Store_1</UnderlyingIndexName>
+    </key>
+    <column id="65" parent="13" name="storeId">
+      <Position>1</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="66" parent="13" name="userName">
+      <Position>2</Position>
+      <DataType>varchar(15)|0s</DataType>
+    </column>
+    <index id="67" parent="13" name="sqlite_autoindex_StoreOwners_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>userName
+storeId</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="68" parent="13" name="PKstoreOwner">
+      <ColNames>userName
+storeId</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_StoreOwners_1</UnderlyingIndexName>
+    </key>
+    <foreign-key id="69" parent="13">
+      <ColNames>storeId</ColNames>
+      <RefTableName>Store</RefTableName>
+      <RefColNames>storeId</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <foreign-key id="70" parent="13">
+      <ColNames>userName</ColNames>
+      <RefTableName>Users</RefTableName>
+      <RefColNames>userName</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <column id="71" parent="14" name="storeId">
+      <Position>1</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="72" parent="14" name="userName">
+      <Position>2</Position>
+      <DataType>varchar(15)|0s</DataType>
+    </column>
+    <column id="73" parent="14" name="addProduct">
+      <Position>3</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="74" parent="14" name="removeProduct">
+      <Position>4</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="75" parent="14" name="editProduct">
+      <Position>5</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="76" parent="14" name="addDiscount">
+      <Position>6</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="77" parent="14" name="removeDiscount">
+      <Position>7</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <column id="78" parent="14" name="editDiscount">
+      <Position>8</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <index id="79" parent="14" name="sqlite_autoindex_StroreManager_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>userName
+storeId</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="80" parent="14" name="PKstroreManager">
+      <ColNames>userName
+storeId</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_StroreManager_1</UnderlyingIndexName>
+    </key>
+    <foreign-key id="81" parent="14">
+      <ColNames>storeId</ColNames>
+      <RefTableName>Store</RefTableName>
+      <RefColNames>storeId</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <foreign-key id="82" parent="14">
+      <ColNames>userName</ColNames>
+      <RefTableName>Users</RefTableName>
+      <RefColNames>userName</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <column id="83" parent="15" name="cookies">
+      <Position>1</Position>
+      <DataType>varchar|0s</DataType>
+    </column>
+    <column id="84" parent="15" name="productInStoreId">
+      <Position>2</Position>
+      <DataType>Integer|0s</DataType>
+    </column>
+    <index id="85" parent="15" name="sqlite_autoindex_UserCart_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>cookies
+productInStoreId</ColNames>
+      <ColumnCollations>
+</ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="86" parent="15" name="PKuserCart">
+      <ColNames>cookies
+productInStoreId</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_UserCart_1</UnderlyingIndexName>
+    </key>
+    <foreign-key id="87" parent="15">
+      <ColNames>cookies</ColNames>
+      <RefTableName>ProductInStore</RefTableName>
+      <RefColNames>cookies</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <foreign-key id="88" parent="15">
+      <ColNames>productInStoreId</ColNames>
+      <RefTableName>ProductInStore</RefTableName>
+      <RefColNames>productInStoreId</RefColNames>
+      <OnUpdate>cascade</OnUpdate>
+    </foreign-key>
+    <column id="89" parent="16" name="userName">
+      <Position>1</Position>
+      <DataType>varchar(15)|0s</DataType>
+    </column>
+    <column id="90" parent="16" name="password">
+      <Position>2</Position>
+      <DataType>varchar(15)|0s</DataType>
+    </column>
+    <column id="91" parent="16" name="isActive">
+      <Position>3</Position>
+      <DataType>Integer|0s</DataType>
+      <DefaultExpression>1</DefaultExpression>
+    </column>
+    <column id="92" parent="16" name="isSuperUser">
+      <Position>4</Position>
+      <DataType>Integer|0s</DataType>
+      <DefaultExpression>0</DefaultExpression>
+    </column>
+    <index id="93" parent="16" name="sqlite_autoindex_Users_1">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>userName</ColNames>
+      <ColumnCollations></ColumnCollations>
+      <Unique>1</Unique>
+    </index>
+    <key id="94" parent="16">
+      <ColNames>userName</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>sqlite_autoindex_Users_1</UnderlyingIndexName>
+    </key>
+    <column id="95" parent="17" name="type">
+      <Position>1</Position>
+      <DataType>text|0s</DataType>
+    </column>
+    <column id="96" parent="17" name="name">
+      <Position>2</Position>
+      <DataType>text|0s</DataType>
+    </column>
+    <column id="97" parent="17" name="tbl_name">
+      <Position>3</Position>
+      <DataType>text|0s</DataType>
+    </column>
+    <column id="98" parent="17" name="rootpage">
+      <Position>4</Position>
+      <DataType>integer|0s</DataType>
+    </column>
+    <column id="99" parent="17" name="sql">
+      <Position>5</Position>
+      <DataType>text|0s</DataType>
+    </column>
+    <column id="100" parent="18" name="name">
+      <Position>1</Position>
+    </column>
+    <column id="101" parent="18" name="seq">
+      <Position>2</Position>
+    </column>
+  </database-model>
+</dataSource>
