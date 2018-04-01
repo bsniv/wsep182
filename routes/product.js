@@ -9,8 +9,6 @@ router.post('/addProduct', function(req, res, next) {
         res.send('received empty body');
         return;
     }
-    if (DB.get('Product'),req.body.productName != undefined)
-        return;
     if(DB.authentication(req.body.username,req.body.password)){
         DB.update('Product',req.body)
             .then((result)=>{res.send("The Product has been changed")})
@@ -24,8 +22,6 @@ router.put('/updateImportPrice', function(req, res, next) {
         res.send('received empty body');
         return;
     }
-    if (DB.get('Product'),req.body.productName != undefined)
-        return;
     if(DB.authentication(req.body.username,req.body.password)){
         DB.update('Product',req.body)
             .then((result)=>{res.send("The Product has been changed")})

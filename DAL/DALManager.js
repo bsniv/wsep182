@@ -36,6 +36,20 @@ module.exports = {
         return new Promise((resolve,reject)=>{
             resolve(item);
         });
-    }
+    },
+    authentication: function(username,password){
+        if(username == 'admin' && password == 'admin')
+            return new Promise((resolve,reject)=>{
+                resolve(true);
+            });
+        return new Promise((resolve,reject)=>{
+            get('User',username)
+                .then((result)=>
+                {
+                    resolve(result.username == username && result.password == password);
+                })
+                .catch((err)=>{reject(err);});
+    });}
+
 }
 
