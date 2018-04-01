@@ -4,6 +4,11 @@ var DB = require('../DAL/DALManager');
 
 
 router.post('/login', function(req, res, next) {
+    if (req.body == undefined)
+    {
+        res.send('received empty body');
+        return;
+    }
     if(DB.authentication(req.body.username,req.body.password)){
         res.cookie('username', req.body.username, {maxAge: 900000, httpOnly: true});
         res.cookie('password', req.body.password, {maxAge: 900000, httpOnly: true});
@@ -20,6 +25,11 @@ router.get('/login', function(req, res, next) {
 });
 
 router.post('/register', function(req, res, next) {
+    if (req.body == undefined)
+    {
+        res.send('received empty body');
+        return;
+    }
     if (req.body.isAdmin == true && !validateAdminSession(req.cookies.username,req.cookies.password)) {
         res.send('only Admin can add Admins');
         return;
@@ -41,6 +51,11 @@ router.get('/register', function(req, res, next) {
 
 
 router.put('/update', function(req, res, next) {
+    if (req.body == undefined)
+    {
+        res.send('received empty body');
+        return;
+    }
     if(DB.authentication(req.cookies.username,req.cookies.password))
         if (req.cookies.username == req.body.username || validateAdminSession(req.cookies.username,req.cookies.password)){
             DB.update('User',req.body)
@@ -52,6 +67,11 @@ router.put('/update', function(req, res, next) {
 });
 
 router.delete('/delete', function(req, res, next) {
+    if (req.body == undefined)
+    {
+        res.send('received empty body');
+        return;
+    }
     if(validateAdminSession(req.cookies.username,req.cookies.password)){
             DB.remove('User',req.body)
                 .then((result)=>{res.send("The User has been deleted")})
