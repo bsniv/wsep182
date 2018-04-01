@@ -54,13 +54,13 @@
             "CONSTRAINT PKstoreManagers PRIMARY KEY (userName, storeId))");
 
         db.run("CREATE TABLE IF NOT EXISTS Discounts "+
-            "(productInStore Integer, percentage Real, dueDate varchar(30) NOT NULL, " +
-            "FOREIGN KEY(productInStore) REFERENCES ProductsInStores(productInStore) ON UPDATE CASCADE," +
-            "CONSTRAINT PKdiscount PRIMARY KEY (productInStore, percentage))");
+            "(productInStoreId Integer, percentage Real, dueDate varchar(30) NOT NULL, " +
+            "FOREIGN KEY(productInStoreId) REFERENCES ProductsInStores(productInStoreId) ON UPDATE CASCADE," +
+            "CONSTRAINT PKdiscount PRIMARY KEY (productInStoreId, percentage))");
 
         db.run("CREATE TABLE IF NOT EXISTS Coupons "+
-            " ( couponId varchar PRIMARY KEY  , productInStore Integer, percentage Real, dueDate varchar(30) NOT NULL, " +
-            "FOREIGN KEY(productInStore) REFERENCES ProductsInStores(productInStore) ON UPDATE CASCADE)");
+            " ( couponId varchar PRIMARY KEY  , productInStoreId Integer, percentage Real, dueDate varchar(30) NOT NULL, " +
+            "FOREIGN KEY(productInStoreId) REFERENCES ProductsInStores(productInStoreId) ON UPDATE CASCADE)");
 
         });
         db.close();
