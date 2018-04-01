@@ -20,7 +20,7 @@
             "FOREIGN KEY(productId) REFERENCES Products(productId) ON UPDATE CASCADE ," +
             "FOREIGN KEY(storeId) REFERENCES Stores(storeId) ON UPDATE CASCADE )" );
         db.run("CREATE TABLE IF NOT EXISTS Sales "+
-            " ( saleId Integer PRIMARY KEY AUTOINCREMENT , productInStoreId Integer, tyopeOfSale Integer, amount Integer, " +
+            " ( saleId Integer PRIMARY KEY AUTOINCREMENT , productInStoreId Integer, typeOfSale Integer, amount Integer, " +
             " FOREIGN KEY(productInStoreId) REFERENCES ProductsInStores(productInStoreId) ON UPDATE CASCADE )");
 
         db.run("CREATE TABLE IF NOT EXISTS RaffleSales "+
@@ -42,16 +42,16 @@
 
         db.run("CREATE TABLE IF NOT EXISTS BuyHistory "+
             "( buyId Integer PRIMARY KEY AUTOINCREMENT , productId Integer ,storeId Integer,date varchar(30) NOT NULL," +
-            " userName varchar(15), price Integer," +
+            " userName varchar(15), price Integer, amount Integer, typeOfSale Integer," +
             "FOREIGN KEY(productId) REFERENCES Products(productId) ON UPDATE CASCADE," +
             "FOREIGN KEY(userName) REFERENCES Users(userName) ON UPDATE CASCADE," +
             "FOREIGN KEY(storeId) REFERENCES Stores(storeId) ON UPDATE CASCADE)" );
 
-        db.run("CREATE TABLE IF NOT EXISTS StroreManagers "+
+        db.run("CREATE TABLE IF NOT EXISTS StoreManagers "+
             "(storeId Integer, userName varchar(15),privilege Integer DEFAULT 0 , " +
             "FOREIGN KEY(storeId) REFERENCES Stores(storeId) ON UPDATE CASCADE," +
             "FOREIGN KEY(userName) REFERENCES Users(userName) ON UPDATE CASCADE, " +
-            "CONSTRAINT PKstroreManagers PRIMARY KEY (userName, storeId))");
+            "CONSTRAINT PKstoreManagers PRIMARY KEY (userName, storeId))");
 
         db.run("CREATE TABLE IF NOT EXISTS Discounts "+
             "(productInStore Integer, percentage Real, dueDate varchar(30) NOT NULL, " +
