@@ -47,22 +47,21 @@ module.exports = {
             return new Promise((resolve,reject)=> {
                 var db = new sqlite3.Database('DataBase.db');
                 db.all("insert into Products\n" +
-                    "(productId, productName, basePrice)\n" +
-                    "VALUES (" + item.productId + ",'" + item.productName + "'," + item.basePrice + ");",
+                    "(productName, basePrice)\n" +
+                    "VALUES ('" + item.productName + "'," + item.basePrice + ");",
                     function (err) {
                         if (err){
-                            reject("error");
+                            reject("error11");
                         }
                         else{
-                            db.all("select * from Products where productId = "+item.productId+" and " +
-                                "productName is '"+item.productName+"' and basePrice = "+item.basePrice,function(err,rows){
+                            db.all("SELECT * FROM Products ORDER BY productId DESC LIMIT 1",function(err,rows){
                                 if(err){
                                     reject("error");
                                 }
                                 else{
-                                    resolve(rows[0]);
+                                    resolve(rows);
                                 }
-                            })
+                            });
                         }
                     });
                     db.close();
@@ -75,10 +74,8 @@ module.exports = {
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
             var querySting="UPDATE Products " +
-                "SET productId = " + item.productId +
-                ", productName = '"+ item.productName +
-                "', basePrice = " + item.basePrice+
-                " where productId = " + item.productId;
+                "SET productName = '"+ item.productName +
+                "', basePrice = " + item.basePrice;
             db.all(querySting ,
                 function (err) {
                     if (err){
@@ -92,28 +89,28 @@ module.exports = {
                                     reject("error");
                                 }
                                 else{
-                                    resolve(rows[0]);
+                                    resolve(rows);
                                 }
                         })
                     }
                 });
             db.close();
         });
-    },
+    }
     /**
      *
      */
-    remove: function(item){
-        return new Promise((resolve,reject)=>{
-            var db=new sqlite3.Database('DataBase.db');
-        db.all("DELETE from Products where productId = "+item.productId, function(err){
-            if(err){
-                resolve("error");
-                return;
-            }
-            resolve("deleted");
-        });
-        db.close();
-    });
-    }
+    // remove: function(item){
+    //     return new Promise((resolve,reject)=>{
+    //         var db=new sqlite3.Database('DataBase.db');
+    //     db.all("DELETE from Products where productId = "+item.productId, function(err){
+    //         if(err){
+    //             resolve("error");
+    //             return;
+    //         }
+    //         resolve("deleted");
+    //     });
+    //     db.close();
+    // });
+    // }
 };

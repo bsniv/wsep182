@@ -9,15 +9,15 @@ module.exports = {
             var db = new sqlite3.Database('DataBase.db');
         var all=0;
         var queryString = "select * from UserCart where";
-        if(item.cookies!=null){
-            queryString+=" cookies is '"+item.cookies+"'";
+        if(item.session!=null){
+            queryString+=" session is '"+item.session+"'";
             all++;
         }
-        if(item.productInStoreId!=null){
+        if(item.saleId!=null){
             if(all!=0){
                 queryString+=" and";
             }
-            queryString+=" productInStoreId = "+item.productInStoreId;
+            queryString+=" saleId = "+item.saleId;
             all++;
         }
         if(item.amount!=null){
@@ -49,21 +49,21 @@ module.exports = {
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
             var queryString="insert into UserCart\n" +
-                "(cookies, productInStoreId, amount)\n" +
-                "VALUES ('" + item.cookies + "'," + item.productInStoreId+"," + item.amount +");";
+                "(session, saleId, amount)\n" +
+                "VALUES ('" + item.session + "'," + item.saleId+"," + item.amount +");";
         db.all(queryString,
             function (err) {
                 if (err){
                     reject(queryString);
                 }
                 else{
-                    db.all("select * from UserCart where cookies is '"+item.cookies+"' and productInStoreId = "+item.productInStoreId,
+                    db.all("select * from UserCart where session is '"+item.session+"' and saleId = "+item.saleId,
                         function(err,rows){
                             if(err){
                                 reject("error");
                             }
                             else{
-                                resolve(rows[0]);
+                                resolve(rows);
                             }
                         })
                 }
@@ -78,25 +78,23 @@ module.exports = {
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
         var querySting="UPDATE UserCart " +
-            "SET cookies = '"+ item.cookies +"'"+
-            ", productInStoreId = "+ item.productInStoreId +
-            ", amount = " + item.amount+
-            " where productInStoreId = " + item.productInStoreId +" and cookies is '"+ item.cookies+"'";
+            "SET amount = " + item.amount+
+            " where saleId = " + item.saleId +" and session is '"+ item.session+"'";
         db.all(querySting ,
             function (err) {
                 if (err){
                     reject(querySting);
                 }
                 else{
-                    db.all("select * from UserCart where productInStoreId = " + item.productInStoreId +" and cookies is '"+ item.cookies+"'",
+                    db.all("select * from UserCart where saleId = " + item.saleId +" and session is '"+ item.session+"'",
                         function(err,rows){
                             if(err){
                                 reject("error");
                             }
                             else{
-                                resolve(rows[0]);
+                                resolve(rows);
                             }
-                        })
+                        });
                 }
             });
         db.close();
@@ -108,7 +106,7 @@ module.exports = {
     remove: function(item){
         return new Promise((resolve,reject)=>{
             var db=new sqlite3.Database('DataBase.db');
-        db.all("DELETE from UserCart where productInStoreId = "+item.productInStoreId +" and cookies is'"+item.cookies+"'" , function(err){
+        db.all("DELETE from UserCart where saleId = "+item.saleId +" and session is'"+item.session+"'" , function(err){
             if(err){
                 resolve("error");
                 return;

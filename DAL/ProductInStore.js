@@ -27,11 +27,11 @@ module.exports = {
             queryString+=" storeId = "+item.storeId;
             all++;
         }
-        if(item.storePrice!=null){
+        if(item.price!=null){
             if(all!=0){
                 queryString+=" and";
             }
-            queryString+=" storePrice = "+item.storePrice;
+            queryString+=" price = "+item.price;
             all++;
         }
         if(item.amount!=null){
@@ -69,14 +69,14 @@ module.exports = {
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
         db.all("insert into ProductsInStore\n" +
-            "(productInStoreId, productId, storeId, storePrice, amount, isActive)\n" +
-            "VALUES (" + item.productInStoreId + "," + item.productId + "," + item.storeId + "," + item.storePrice + "," + item.amount +"," + item.isActive +");",
+            "(storeId, price, amount, isActive)\n" +
+            "VALUES (" + item.storeId + "," + item.price + "," + item.amount +"," + item.isActive +");",
             function (err) {
                 if (err){
                     reject("error");
                 }
                 else{
-                    db.all("select * from ProductsInStore where productInStoreId = "+item.productInStoreId,
+                    db.all("SELECT * FROM Products ORDER BY productInStoreId DESC LIMIT 1",
                         function(err,rows){
                         if(err){
                             reject("error");
@@ -97,26 +97,22 @@ module.exports = {
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
         var querySting="UPDATE ProductsInStore " +
-            "SET productInStoreId = " + item.productInStoreId +
-            ", productId = "+ item.productId +
-            ", storeId = " + item.storeId+
-            ", storePrice = " + item.storePrice+
+            "SET price = " + item.price+
             ", amount = " + item.amount+
-            ", isActive = " + item.isActive+
-            " where productInStoreId = " + item.productInStoreId;
+            " where productInStoreId = " + item.productInStoreId +" and productId = " + item.productId;
         db.all(querySting ,
             function (err) {
                 if (err){
                     reject(querySting);
                 }
                 else{
-                    db.all("select * from ProductsInStore where productInStoreId = "+item.productInStoreId,
+                    db.all("select * from ProductsInStore where productInStoreId = "+item.productInStoreId+" and productId = "+item.productId,
                         function(err,rows){
                             if(err){
                                 reject("error");
                             }
                             else{
-                                resolve(rows[0]);
+                                resolve(rows);
                             }
                         })
                 }
@@ -127,17 +123,36 @@ module.exports = {
     /**
      *
      */
+
     remove: function(item){
-        return new Promise((resolve,reject)=>{
-            var db=new sqlite3.Database('DataBase.db');
-        db.all("DELETE from ProductsInStore where productInStoreId = "+item.productInStoreId, function(err){
-            if(err){
-                resolve("error");
-                return;
-            }
-            resolve("deleted");
-        });
+        return new Promise((resolve,reject)=> {
+            var db = new sqlite3.Database('DataBase.db');
+        var querySting="UPDATE ProductsInStore " +
+            "SET isActive = 0" +
+            " where productInStoreId = " + item.productInStoreId +" and productId = " + item.productId;
+        db.all(querySting ,
+            function (err) {
+                if (err){
+                    reject(querySting);
+                }
+                else{
+                    resolve("deleted");
+                }
+            });
         db.close();
     });
     }
+    // remove: function(item){
+    //     return new Promise((resolve,reject)=>{
+    //         var db=new sqlite3.Database('DataBase.db');
+    //     db.all("DELETE from ProductsInStore where productInStoreId = "+item.productInStoreId+" and productId = "+item.productId, function(err){
+    //         if(err){
+    //             resolve("error");
+    //             return;
+    //         }
+    //         resolve("deleted");
+    //     });
+    //     db.close();
+    // });
+    // }
 };
