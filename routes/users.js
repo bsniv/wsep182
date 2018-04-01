@@ -6,7 +6,7 @@ var DB = require('../DAL/DALManager');
 router.post('/login', function(req, res, next) {
     if(DB.authentication(req.body.username,req.body.password)){
         res.cookie('username', req.body.username, {maxAge: 900000, httpOnly: true});
-        res.cookie('Password', req.body.password, {maxAge: 900000, httpOnly: true});
+        res.cookie('password', req.body.password, {maxAge: 900000, httpOnly: true});
         res.send('abcde');
     }
 });
@@ -14,7 +14,7 @@ router.post('/login', function(req, res, next) {
 router.get('/login', function(req, res, next) {
     if(DB.authentication(req.query.username,req.query.password)){
         res.cookie('username', req.query.username, {maxAge: 900000, httpOnly: true});
-        res.cookie('Password', req.query.password, {maxAge: 900000, httpOnly: true});
+        res.cookie('password', req.query.password, {maxAge: 900000, httpOnly: true});
         res.send('abcde');
     }
 });
