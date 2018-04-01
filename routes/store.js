@@ -16,6 +16,8 @@ router.get('/', function(req, res, next) {
  * only logged in user can create stores
  */
 router.post('/', function(req, res, next) {
+    if(req.cookies.userName==undefined || req.cookies.Password==undefined)
+        res.send("user not logged in");
     DB.authentication(req.cookies.userName,req.cookies.Password)
         .then(
             (isExist)=> {
@@ -49,6 +51,8 @@ router.post('/', function(req, res, next) {
  * only the owner of the Store can update the Store
  */
 router.put('/', function(req, res, next) {
+    if(req.cookies.userName==undefined || req.cookies.Password==undefined)
+        res.send("user not logged in");
     DB.authentication(req.cookies.userName,req.cookies.Password)
         .then((isExist)=>{
             if(isExist){
@@ -92,6 +96,8 @@ router.put('/', function(req, res, next) {
 
 
 router.delete('/', function(req, res, next) {
+    if(req.cookies.userName==undefined || req.cookies.Password==undefined)
+        res.send("user not logged in");
     DB.authentication(req.cookies.userName,req.cookies.Password)
         .then((isExist)=>{
             if(isExist){
