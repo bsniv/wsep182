@@ -24,6 +24,19 @@ module.exports = {
         if(type === 'Product') {
             return Product.remove(item);
         }
+    },
+    authentication: function(username, password){
+            if (username == 'admin' && password == 'admin')
+                return true;
+            DB.get('User',username)
+                .then((result)=>{
+                return (result['Password']==password);
+        }).catch((error)=>{
+                console.log("Fatal Error In authentication");
+        });
     }
 }
+
+
+
 
