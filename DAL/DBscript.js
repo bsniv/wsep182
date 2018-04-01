@@ -1,61 +1,68 @@
-var DB = require('../DAL/DALManager');
-var sqlite3 = require('sqlite3').verbose();
-var createTables = function() {
-    var db = new sqlite3.Database('DataBase.db');
-    db.serialize(function() {
+        var DB = require('../DAL/DALManager');
+        var sqlite3 = require('sqlite3').verbose();
+        var createTables = function() {
+        var db = new sqlite3.Database('DataBase.db');
+        db.serialize(function() {
         db.run("CREATE TABLE IF NOT EXISTS Users "+
-            "( userName varchar(15) PRIMARY KEY, password varchar(15),isActive Integer DEFAULT 1, isSuperUser Integer DEFAULT 0)");
-        db.run("INSERT OR IGNORE INTO Users (userName,password, isActive, isSuperUser) VALUES ('admin','123456',1,1)");
-        db.run("CREATE TABLE IF NOT EXISTS Store "+
-            "( storeId Integer PRIMARY KEY AUTOINCREMENT, storeName varchar(15) unique,isActive Integer DEFAULT 1)");
-        db.run("CREATE TABLE IF NOT EXISTS Product "+
-            "( productId Integer PRIMARY KEY AUTOINCREMENT, ProductName varchar(10) unique, basePrice Integer)");
-        db.run("CREATE TABLE IF NOT EXISTS ProductInStore "+
-            "( productInStoreId Integer PRIMARY KEY AUTOINCREMENT, productId Integer,storeId Integer ,storePrice Real, amount Integer,isActive Integer, " +
-            "FOREIGN KEY(productId) REFERENCES Product(productId) ON UPDATE CASCADE ," +
-            "FOREIGN KEY(storeId) REFERENCES Store(storeId) ON UPDATE CASCADE )" );
+            "( userName varchar(15) PRIMARY KEY, password varchar(15),isActive Integer DEFAULT 1)");
+        // db.run("INSERT OR IGNORE INTO Users (userName,password, isActive, isSuperUser) VALUES ('admin','123456',1,1)");
+        db.run("CREATE TABLE IF NOT EXISTS Admins "+
+            "( userName varchar(15) ," +
+            " FOREIGN KEY(userName) REFERENCES Users(userName) ON UPDATE CASCADE, " +
+            "CONSTRAINT PKuserName PRIMARY KEY (userName) )");
+        db.run("CREATE TABLE IF NOT EXISTS Stores "+
+            "( storeId Integer PRIMARY KEY AUTOINCREMENT , storeName varchar(15) unique,isActive Integer DEFAULT 1)");
+        db.run("CREATE TABLE IF NOT EXISTS Products "+
+            "( productId Integer PRIMARY KEY AUTOINCREMENT , productName varchar(20) unique, basePrice Real)");
+        db.run("CREATE TABLE IF NOT EXISTS ProductsInStores "+
+            "( productInStoreId Integer PRIMARY KEY AUTOINCREMENT , productId Integer, storeId Integer, " +
+            "price Real, amount Integer,isActive Integer, " +
+            "FOREIGN KEY(productId) REFERENCES Products(productId) ON UPDATE CASCADE ," +
+            "FOREIGN KEY(storeId) REFERENCES Stores(storeId) ON UPDATE CASCADE )" );
         db.run("CREATE TABLE IF NOT EXISTS Sales "+
-            " ( saleId Integer PRIMARY KEY AUTOINCREMENT, productInStoreId Integer, kind Integer," +
-            " FOREIGN KEY(productInStoreId) REFERENCES ProductInStore(productInStoreId) ON UPDATE CASCADE )");
+            " ( saleId Integer PRIMARY KEY AUTOINCREMENT , productInStoreId Integer, tyopeOfSale Integer, amount Integer, " +
+            " FOREIGN KEY(productInStoreId) REFERENCES ProductsInStores(productInStoreId) ON UPDATE CASCADE )");
 
+        db.run("CREATE TABLE IF NOT EXISTS RaffleSales "+
+            " ( saleId Integer , offer Real, userName varchar(15), dueDate varchar(30) NOT NULL, " +
+            " FOREIGN KEY(saleId) REFERENCES Sales(saleId) ON UPDATE CASCADE ," +
+            "FOREIGN KEY(userName) REFERENCES Users(userName) ON UPDATE CASCADE, " +
+            "CONSTRAINT PKraffleSales PRIMARY KEY (userName, saleId))");
 
-        db.run("CREATE TABLE IF NOT EXISTS Session "+
-            " ( userName varchar(15), cookies varchar PRIMARY KEY," +
-            " FOREIGN KEY(userName) REFERENCES Users(userName) ON UPDATE CASCADE  )");
-
-        db.run("CREATE TABLE IF NOT EXISTS UserCart "+
-            " ( cookies varchar, productInStoreId Integer," +
-            " FOREIGN KEY(productInStoreId) REFERENCES ProductInStore(productInStoreId) ON UPDATE CASCADE,"+
-            " FOREIGN KEY(cookies) REFERENCES ProductInStore(cookies) ON UPDATE CASCADE, " +
-            "CONSTRAINT PKuserCart PRIMARY KEY (cookies, productInStoreId))");
-
+        db.run("CREATE TABLE IF NOT EXISTS UserCarts "+
+            " ( session varchar, saleId Integer, amount Integer, " +
+            " FOREIGN KEY(saleId) REFERENCES Sales(saleId) ON UPDATE CASCADE,"+
+            "CONSTRAINT PKuserCart PRIMARY KEY (session, saleId))");
 
         db.run("CREATE TABLE IF NOT EXISTS StoreOwners "+
             "(storeId Integer, userName varchar(15), " +
-            "FOREIGN KEY(storeId) REFERENCES Store(storeId) ON UPDATE CASCADE," +
+            "FOREIGN KEY(storeId) REFERENCES Stores(storeId) ON UPDATE CASCADE," +
             "FOREIGN KEY(userName) REFERENCES Users(userName) ON UPDATE CASCADE, " +
             "CONSTRAINT PKstoreOwner PRIMARY KEY (userName, storeId))");
 
-
         db.run("CREATE TABLE IF NOT EXISTS BuyHistory "+
-            "( buyId Integer PRIMARY KEY AUTOINCREMENT, productId Integer ,storeId Integer,date varchar(30) NOT NULL," +
-            " productGrade Integer, storeGrade Integer, comment varchar," +
-            "FOREIGN KEY(productId) REFERENCES Product(productId) ON UPDATE CASCADE," +
-            "FOREIGN KEY(storeId) REFERENCES Store(storeId) ON UPDATE CASCADE)" );
+            "( buyId Integer PRIMARY KEY AUTOINCREMENT , productId Integer ,storeId Integer,date varchar(30) NOT NULL," +
+            " userName varchar(15), price Integer," +
+            "FOREIGN KEY(productId) REFERENCES Products(productId) ON UPDATE CASCADE," +
+            "FOREIGN KEY(userName) REFERENCES Users(userName) ON UPDATE CASCADE," +
+            "FOREIGN KEY(storeId) REFERENCES Stores(storeId) ON UPDATE CASCADE)" );
 
-        db.run("CREATE TABLE IF NOT EXISTS Discount "+
-            "(productInStore Integer, amountInPrecent Integer, " +
-            "FOREIGN KEY(productInStore) REFERENCES ProductInStore(productInStore) ON UPDATE CASCADE," +
-            "CONSTRAINT PKdiscount PRIMARY KEY (productInStore, amountInPrecent))");
-
-        db.run("CREATE TABLE IF NOT EXISTS StroreManager "+
-            "(storeId Integer, userName varchar(15),addProduct Integer, removeProduct Integer," +
-            "editProduct Integer, addDiscount Integer, removeDiscount Integer, editDiscount Integer, " +
-            "FOREIGN KEY(storeId) REFERENCES Store(storeId) ON UPDATE CASCADE," +
+        db.run("CREATE TABLE IF NOT EXISTS StroreManagers "+
+            "(storeId Integer, userName varchar(15),privilege Integer DEFAULT 0 , " +
+            "FOREIGN KEY(storeId) REFERENCES Stores(storeId) ON UPDATE CASCADE," +
             "FOREIGN KEY(userName) REFERENCES Users(userName) ON UPDATE CASCADE, " +
-            "CONSTRAINT PKstroreManager PRIMARY KEY (userName, storeId))");
+            "CONSTRAINT PKstroreManagers PRIMARY KEY (userName, storeId))");
 
-    });
-    db.close();
-}
-createTables();
+        db.run("CREATE TABLE IF NOT EXISTS Discounts "+
+            "(productInStore Integer, percentage Real, dueDate varchar(30) NOT NULL, " +
+            "FOREIGN KEY(productInStore) REFERENCES ProductsInStores(productInStore) ON UPDATE CASCADE," +
+            "CONSTRAINT PKdiscount PRIMARY KEY (productInStore, percentage))");
+
+        db.run("CREATE TABLE IF NOT EXISTS Coupons "+
+            " ( couponId varchar PRIMARY KEY  , productInStore Integer, percentage Real, dueDate varchar(30) NOT NULL, " +
+            "FOREIGN KEY(productInStore) REFERENCES ProductsInStores(productInStore) ON UPDATE CASCADE)");
+
+        });
+        db.close();
+        }
+        createTables();
