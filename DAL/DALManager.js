@@ -4,39 +4,38 @@ var Product=require('./Product');
 
 module.exports = {
 
-    get: function(type){
+    get: function(type,item){
         if(type === 'Product'){
             return Product.get();
         }
+        return new Promise((resolve,reject)=>{
+            resolve(item);
+        });
 
     },
     set: function(type,item){
         if(type === 'Product') {
             return Product.set(item);
         }
+        return new Promise((resolve,reject)=>{
+            resolve(item);
+        });
     },
     update: function(type,item){
         if(type === 'Product') {
             return Product.update(item);
         }
+        return new Promise((resolve,reject)=>{
+            resolve(item);
+        });
     },
     remove: function(type,item){
         if(type === 'Product') {
             return Product.remove(item);
         }
-    },
-    authentication: function(username, password){
-            if (username == 'admin' && password == 'admin')
-                return true;
-            DB.get('User',username)
-                .then((result)=>{
-                return (result['Password']==password);
-        }).catch((error)=>{
-                console.log("Fatal Error In authentication");
+        return new Promise((resolve,reject)=>{
+            resolve(item);
         });
     }
 }
-
-
-
 
