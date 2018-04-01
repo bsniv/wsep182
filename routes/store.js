@@ -101,7 +101,7 @@ router.delete('/', function(req, res, next) {
     DB.authentication(req.cookies.userName,req.cookies.Password)
         .then((isExist)=>{
             if(isExist){
-                Owner={}
+                Owner={};
                 Owner.StoreId=req.query.StoreId;
                 Owner.Username=req.cookies.userName;
                 if(Owner.StoreId==undefined)
