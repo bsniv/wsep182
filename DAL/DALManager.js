@@ -4,9 +4,9 @@ var Product=require('./Product');
 
 module.exports = {
 
-    get: function(type){
+    get: function(type,item){
         if(type === 'Product'){
-            return Product.get();
+            return Product.get(item);
         }
 
     },
