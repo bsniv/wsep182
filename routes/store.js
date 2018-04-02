@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var DB = require('../DAL/DALManager');
 
-/* GET users listing. */
+/* GET Stores listing. */
 router.get('/', function(req, res, next) {
     DB.get('Store',req.query)
         .then((stores)=>{
@@ -15,8 +15,8 @@ router.get('/', function(req, res, next) {
  * and a new owner to that store
  * only logged in user can create stores
  */
-router.post('/createShop', function(req, res, next) {
-    if (req.query.storeName == undefined)
+router.post('/createStore', function(req, res, next) {
+    if (req.body.StoreName == undefined)
     {
         res.send('didnt receive userName');
         return;
@@ -25,25 +25,23 @@ router.post('/createShop', function(req, res, next) {
         res.send('Youre not logged in');
         return;
     }
-    DB.authentication(req.cookies.userName,req.cookies.Password)
+    DB.authentication(req.cookies.username,req.cookies.password)
         .then(
             (isExist)=> {
                 if(isExist) {
-                    StoreToCreate = {}
-                    StoreToCreate.StoreName = req.body.StoreName;
-                    StoreToCreate.Owner = {}
-                    StoreToCreate.Owner.Username = req.cookies.userName;
-                    DB.set('Store', StoreToCreate)
-                        .then((stores) => {
-                        if(res != null
-                )
-                    {
-                        res.send("The Store has been updated");
-                    }
-                else
-                    {
-                        res.send("err");
-                    }
+                    DB.set('Store', {storeName: req.body.StoreName, isActive: 1})
+                        .then((newStore) => {
+                            if(newStore.length > 0)
+                                {
+                                    DB.set('StoreOwner',{storeId: newStore[0].storeId, userName: req.cookies.username})
+                                        .then((result)=>{
+                                        res.send("The Store has been added with id: "+newStore[0].storeId);
+                                    });
+                                }
+                                else
+                                {
+                                    res.send("unable to add the store");
+                                }
                 });
                 }
                 else{
@@ -57,30 +55,19 @@ router.post('/createShop', function(req, res, next) {
  * update the Store
  * only the owner of the Store can update the Store
  */
-router.put('/', function(req, res, next) {
-    DB.authentication(req.cookies.userName,req.cookies.Password)
+router.put('/updateStore', function(req, res, next) {
+    DB.authentication(req.cookies.username,req.cookies.password)
         .then((isExist)=>{
             if(isExist){
-                Owner={};
-                Owner.Username=req.cookies.userName;
-                Owner.StoreId=req.query.StoreId;
-                DB.get('Owner',Owner)
-                    .then((owner)=>{
-                       if(owner){
-                           StoreToUpdate={};
-                           StoreToUpdate.StoreId=req.query.StoreId;
-                           DB.get('Store',StoreToUpdate)
-                               .then((store)=> {
-                                   if(store.isActive){
-                                       store.StoreName=req.body.StoreName;
-                                       DB.update('Store',store)
+                DB.get('StoreOwner',{userName: req.cookies.username, storeId: req.body.storeId})
+                    .then((owners)=>{
+                       if(owners.length > 0){
+                           DB.get('Store',{storeId: req.body.storeId})
+                               .then((stores)=> {
+                                   if(stores.length > 0 && stores[0].isActive){
+                                       DB.update('Store',{storeId: req.body.storeId, storeName: req.body.storeName})
                                            .then((new_store)=>{
-                                               if(new_store){
-                                                   res.send("the store has been updated");
-                                               }
-                                               else{
-                                                   res.send("Err cannot update the store");
-                                               }
+                                               res.send("the store has been updated");
                                            });
                                     }
                                     else{
@@ -101,12 +88,12 @@ router.put('/', function(req, res, next) {
 
 
 router.delete('/', function(req, res, next) {
-    DB.authentication(req.cookies.userName,req.cookies.Password)
+    DB.authentication(req.cookies.username,req.cookies.password)
         .then((isExist)=>{
             if(isExist){
                 Owner={}
                 Owner.StoreId=req.query.StoreId;
-                Owner.Username=req.cookies.userName;
+                Owner.Username=req.cookies.username;
                 if(Owner.StoreId==undefined)
                     res.send("store id not specified");
                 DB.get("Owner",Owner)
@@ -125,7 +112,7 @@ router.delete('/', function(req, res, next) {
                                 });
                         }
                         else{
-                            userobj.Username=req.cookies.userName;
+                            userobj.Username=req.cookies.username;
                             DB.get(userobj)
                                 .then((user)=>{
                                     if(user.isSuperUser){

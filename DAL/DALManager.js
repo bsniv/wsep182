@@ -6,7 +6,7 @@ var StoreManager=require('./StoreManager');
 var Sale=require('./Sale');
 var StoreOwner=require('./StoreOwners');
 var UserCart=require('./UserCart');
-var Store=require('./Store');
+var Store=require('./Stores');
 var Coupons=require('./Coupons');
 var Admins=require('./Admins');
 
