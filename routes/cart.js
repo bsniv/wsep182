@@ -4,7 +4,7 @@ var DB = require('../DAL/DALManager');
 
 //CHANGE TO POST
 /* GET all the products in the cart. */
-router.get('/', function(req, res, next) {
+router.post('/', function(req, res, next) {
     if(req.cookies.userName==undefined || req.cookies.Password==undefined) {
         cart={};
         cart.Session=req.cookies.session;
@@ -32,14 +32,14 @@ router.get('/', function(req, res, next) {
 
 //CHANGE TO POST
 /* add products to the cart. */
-router.get('/addProductToCart', function(req, res, next) {
-    if (req.query.saleId == undefined || req.query.Amount == undefined)
+router.post('/addProductToCart', function(req, res, next) {
+    if (req.body.saleId == undefined || req.body.Amount == undefined)
     {
-        res.send("missing variables in request, productInStoreId and amount needed");
+        res.send("missing variables in request, saleId and amount needed");
         return;
     }
     if(req.cookies.username==undefined || req.cookies.password==undefined) {
-        DB.set('UserCart',{saleId: req.query.saleId, amount: req.query.Amount, session: req.cookies.session})
+        DB.set('UserCart',{saleId: req.body.saleId, amount: req.body.Amount, session: req.cookies.session})
             .then((success)=>{
                 if (success)
                     res.send("product added to cart")});
@@ -53,7 +53,7 @@ router.get('/addProductToCart', function(req, res, next) {
                 else{
                     session=req.cookies.session;
                 }
-            DB.set('UserCart',{saleId: req.query.saleId, amount: req.query.Amount, session: session})
+            DB.set('UserCart',{saleId: req.body.saleId, amount: req.body.Amount, session: session})
                 .then((success)=>{
                 if (success)
                 res.send("product added to cart")});
@@ -65,13 +65,13 @@ router.get('/addProductToCart', function(req, res, next) {
 
 /* update cart. */
 router.put('/updateProductsInCart', function(req, res, next) {
-    if (req.query.saleId == undefined || req.query.Amount == undefined)
+    if (req.body.saleId == undefined || req.body.Amount == undefined)
     {
         res.send("missing variables in request, productInStoreId and amount needed");
         return;
     }
     if(req.cookies.username==undefined || req.cookies.password==undefined) {
-        updateCart(req,res,req.query.saleId,req.query.Amount,req.cookies.session);
+        updateCart(req,res,req.body.saleId,req.body.Amount,req.cookies.session);
     }
     else{
         DB.authentication(req.cookies.username,req.cookies.password)
@@ -82,7 +82,7 @@ router.put('/updateProductsInCart', function(req, res, next) {
                 else{
                     session=req.cookies.session;
                 }
-                updateCart(req,res,req.query.saleId,req.query.Amount,session);
+                updateCart(req,res,req.body.saleId,req.body.Amount,session);
             });
     }
 });
@@ -90,7 +90,7 @@ router.put('/updateProductsInCart', function(req, res, next) {
 function updateCart(req, res, saleId, amount, session){
     if (amount == 0)
     {
-        DB.get('UserCart', {saleId: saleId}).then((isExist) => {
+        DB.get('UserCart', {session: session, saleId: saleId}).then((isExist) => {
             if(isExist) {
                 DB.remove('UserCart', {saleId: saleId, session: session})
                     .then((success) => {
@@ -102,7 +102,7 @@ function updateCart(req, res, saleId, amount, session){
         });
     }
     else {
-        DB.get('UserCart', {saleId: saleId}).then((isExist) => {
+        DB.get('UserCart', {session: session, saleId: saleId}).then((isExist) => {
             if(isExist) {
                 DB.update('UserCart', {saleId: saleId, amount: amount, session: session})
                     .then((success) => {
