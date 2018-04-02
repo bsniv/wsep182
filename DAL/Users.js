@@ -80,7 +80,8 @@ module.exports = {
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
         db.all("UPDATE Users "
-            +"SET password = '"+item.password + "', isActive = '"+item.isActive+"', isSuperUser = '"+item.isSuperUser+"' "
+            +" (password,isSuperUser) "
+            +"SET password = '"+item.password
             +"WHERE userName = '"+item.userName+"'",
             function (err) {
                 if (err){
@@ -107,8 +108,9 @@ module.exports = {
     remove: function(item){
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
-        db.all("DELETE FROM Users \n"
-            +"WHERE userName = '"+item.userName+"'",
+        db.all("UPDATE Users \n"
+            +"SET isActive = 0"
+            +"WHERE userName = '"+item.storeId+"'",
             function (err) {
                 if (err){
                     reject("error");
