@@ -5,17 +5,18 @@ module.exports = {
     get: function (item) {
         return new Promise((resolve,reject)=>{
             var db = new sqlite3.Database('DataBase.db');
+        db.run("PRAGMA foreign_keys = ON;");
         var all=0;
         var queryString = "select * from StoreOwners where";
         if(item.storeId!=null){
             queryString+=" storeId is '"+item.storeId+"'";
             all++;
         }
-        if(item.storeName!=null){
+        if(item.userName!=null){
             if(all!=0){
                 queryString+=" and";
             }
-            queryString+=" storeName = "+item.storeName;
+            queryString+=" userName = '"+item.userName+"' ";
             all++;
         }
         if(all==0){
@@ -23,7 +24,7 @@ module.exports = {
         }
         db.all(queryString,function (err,rows){
             if(err){
-                reject(queryString);
+                reject(err);
             }
             else{
                 resolve(rows);
@@ -37,6 +38,7 @@ module.exports = {
     set: function(item){
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
+        db.run("PRAGMA foreign_keys = ON;");
         db.all("insert into StoreOwners " +
             "VALUES ('" + item.storeId + "','" + item.userName +"');",
             function (err) {
@@ -50,7 +52,7 @@ module.exports = {
                             reject("error2");
                         }
                         else{
-                            resolve(rows[0]);
+                            resolve(rows);
                         }
                     })
                 }
@@ -72,6 +74,7 @@ module.exports = {
     remove: function(item){
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
+        db.run("PRAGMA foreign_keys = ON;");
         db.all("DELETE FROM storeOwners \n"
             +"WHERE storeId = '"+item.storeId+"'"+" and "+ "userName = '"+item.userName+"'",
             function (err) {

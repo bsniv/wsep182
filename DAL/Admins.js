@@ -39,14 +39,7 @@ module.exports = {
                     reject("error");
                 }
                 else{
-                    db.all("select * from Admins where userName = '"+item.userName+"'",function(err,rows){
-                        if(err){
-                            reject("error2");
-                        }
-                        else{
-                            resolve(rows[0]);
-                        }
-                    })
+                    resolve([{userName:item.userName}]);
                 }
             });
         db.close();
@@ -72,6 +65,9 @@ module.exports = {
             function (err) {
                 if (err){
                     reject("error");
+                }
+                else{
+                    resolve(true);
                 }
             });
         db.close();

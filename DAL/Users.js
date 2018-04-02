@@ -116,9 +116,17 @@ module.exports = {
     update: function(item){
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
-        db.all("UPDATE Users "
-            +"SET password = '"+item.password+"'  \n"
-            +"WHERE userName = '"+item.userName+"'",
+            if(item.isActive!=undefined){
+                var str="UPDATE Users "
+                    +"SET password = '"+item.password+"' "
+                    +", isActive = "+item.isActive+"\n"
+                    +" WHERE userName = '"+item.userName+"'";
+            }
+            else
+                var str="UPDATE Users "
+                    +"SET password = '"+item.password+"' \n"
+                    +" WHERE userName = '"+item.userName+"'";
+        db.all(str,
             function (err) {
                 if (err){
                     reject(err);

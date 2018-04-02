@@ -8,6 +8,7 @@ var StoreOwner=require('./StoreOwners');
 var UserCart=require('./UserCart');
 var Store=require('./Store');
 var Coupons=require('./Coupons');
+var Admins=require('./Admins');
 
 
 module.exports = {
@@ -38,6 +39,9 @@ module.exports = {
         }
         if(type == 'Coupons'){
             return Coupons.get(item);
+        }
+        if(type == 'Admins'){
+            return Admins.get(item);
         }
 
     },
@@ -72,6 +76,9 @@ module.exports = {
         if(type == 'Coupons'){
             return Coupons.set(item);
         }
+        if(type == 'Admins'){
+            return Admins.set(item);
+        }
     },
     update: function(type,item){
         if(type === 'Product'){
@@ -100,6 +107,9 @@ module.exports = {
         }
         if(type == 'Coupons'){
             return Coupons.update(item);
+        }
+        if(type == 'Admins'){
+            return Admins.update(item);
         }
 
     },
@@ -130,6 +140,9 @@ module.exports = {
         }
         if(type == 'Coupons'){
             return Coupons.remove(item);
+        }
+        if(type == 'Admins'){
+            return Admins.remove(item);
         }
 
     },
