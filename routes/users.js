@@ -65,7 +65,11 @@ router.put('/update', function(req, res, next) {
         res.send('didnt receive password');
         return;
     }
-    DB.authentication(req.cookies.username,req.cookies.password)
+    if(req.cookies.username==undefined||req.cookies.password==undefined) {
+        res.send('Youre not logged in');
+        return;
+    }
+        DB.authentication(req.cookies.username,req.cookies.password)
         .then((isExist)=>{
         if(isExist){
             DB.update('User',{userName:req.cookies.username, password: req.body.password})
@@ -76,21 +80,38 @@ router.put('/update', function(req, res, next) {
         .catch((err)=>{res.send(err);});
     }
     });
-    
+
 });
 
 router.delete('/delete', function(req, res, next) {
-    if (req.body == undefined)
+    if (req.query.userName == undefined)
     {
-        res.send('received empty body');
+        res.send('didnt receive userName');
         return;
     }
-    if(validateAdminSession(req.cookies.username,req.cookies.password)){
-            DB.remove('User',req.body)
-                .then((result)=>{res.send("The User has been deleted")})
-        .catch((err)=>{res.send(err);});
+    if(req.cookies.username==undefined||req.cookies.password==undefined) {
+        res.send('Youre not logged in');
+        return;
+    }
+    DB.get('User',{userName: req.cookies.username})
+        .then((user)=>{
+        if(user && req.cookies.password == user.password){
+                if (user.isAdmin || user.username = res.query.userName) {
+                    DB.remove('User', {userName: req.cookies.username, password: req.cookies.password})
+                        .then((result) = > {
+                        if(result) {
+                            res.send("The User has been removed")
+                        }
+                        else{res.send("ERR: cant remove user")
+                    }
+                    })
+                    .catch((err) = > {res.send(err);
+                    });
+                }
+                else res.send("trying to delete a user without permissions");
         }
-        else res.send('not authorized');
+        else res.send("not logged in");
+    });
 });
 
 
