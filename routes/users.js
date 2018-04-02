@@ -16,6 +16,8 @@ router.get('/login', function(req, res, next) {
                     res.send('you are connected')
                 }
                 else{
+                    res.cookie('username', "", {maxAge: 900000, httpOnly: true});
+                    res.cookie('password', "", {maxAge: 900000, httpOnly: true});
                     res.send('wrong username or password');
                 }
         });
@@ -23,59 +25,93 @@ router.get('/login', function(req, res, next) {
 });
 
 router.post('/register', function(req, res, next) {
-    if (req.body == undefined)
+    if (req.body.userName == undefined || req.body.password==undefined)
     {
         res.send('received empty body');
         return;
     }
-    if (req.body.isAdmin == true && !validateAdminSession(req.cookies.username,req.cookies.password)) {
-        res.send('only Admin can add Admins');
-        return;
+    if(req.cookies.username==undefined||req.cookies.password==undefined){
+        DB.set('User',{userName:req.body.userName, password: req.body.password})
+            .then((result)=>{
+                if(result){res.send("The User has been Added")}
+                else{res.send("ERR: cant add user")}
+            })
+            .catch((err)=>{res.send(err);});
     }
-    DB.set('User',req.body.Users)
-        .then((result)=>{res.send("The User has been Added")})
-    .catch((err)=>{res.send(err);});
+    else{
+        DB.authentication(req.cookies.username,req.cookies.password)
+            .then((isExist)=>{
+                if(isExist){
+                    res.send("you allready have a user");
+                }
+                else{
+                    DB.set('User',{userName:req.body.userName, password: req.body.password})
+                    .then((result)=>{
+                                if(result){res.send("The User has been Added")}
+                                else{res.send("ERR: cant add user")}
+                    })
+                    .catch((err)=>{res.send(err);});
+                }
+        });
+    }
+
 });
 
-router.get('/register', function(req, res, next) {
-    if (req.query.isAdmin == true && !validateAdminSession(req.cookies.username,req.cookies.password)){
-        res.send('only Admin can add Admins');
-        return;
-    }
-    DB.set('User',req.query)
-        .then((result)=>{res.send("The User has been Added")})
-.catch((err)=>{res.send(err);});
-});
 
 
 router.put('/update', function(req, res, next) {
-    if (req.body == undefined)
+    if (req.body.password == undefined)
     {
-        res.send('received empty body');
+        res.send('didnt receive password');
         return;
     }
-    if(DB.authentication(req.cookies.username,req.cookies.password))
-        if (req.cookies.username == req.body.username || validateAdminSession(req.cookies.username,req.cookies.password)){
-            DB.update('User',req.body)
-                .then((result)=>{res.send("The User has been changed")})
+    if(req.cookies.username==undefined||req.cookies.password==undefined) {
+        res.send('Youre not logged in');
+        return;
+    }
+        DB.authentication(req.cookies.username,req.cookies.password)
+        .then((isExist)=>{
+        if(isExist){
+            DB.update('User',{userName:req.cookies.username, password: req.body.password})
+            .then((result)=>{
+                if(result){res.send("The User has been Added")}
+                else{res.send("ERR: cant add user")}
+            })
         .catch((err)=>{res.send(err);});
-        }
-        else res.send('not authorized');
-    else res.send('authentication failed');
+    }
+    });
+
 });
 
 router.delete('/delete', function(req, res, next) {
-    if (req.body == undefined)
+    if (req.query.userName == undefined)
     {
-        res.send('received empty body');
+        res.send('didnt receive userName');
         return;
     }
-    if(validateAdminSession(req.cookies.username,req.cookies.password)){
-            DB.remove('User',req.body)
-                .then((result)=>{res.send("The User has been deleted")})
-        .catch((err)=>{res.send(err);});
+    if(req.cookies.username==undefined||req.cookies.password==undefined) {
+        res.send('Youre not logged in');
+        return;
+    }
+    DB.get('User',{userName: req.cookies.username})
+        .then((user)=>{
+        if(user && req.cookies.password == user.password){
+                if (user.isAdmin || user.username = res.query.userName) {
+                    DB.remove('User', {userName: req.cookies.username, password: req.cookies.password})
+                        .then((result) = > {
+                        if(result) {
+                            res.send("The User has been removed")
+                        }
+                        else{res.send("ERR: cant remove user")
+                    }
+                    })
+                    .catch((err) = > {res.send(err);
+                    });
+                }
+                else res.send("trying to delete a user without permissions");
         }
-        else res.send('not authorized');
+        else res.send("not logged in");
+    });
 });
 
 

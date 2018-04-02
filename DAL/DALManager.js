@@ -1,9 +1,16 @@
 
+var Users=require('./Users');
 var Product=require('./Product');
+var ProductInStore=require('./ProductInStore');
+var StoreManager=require('./StoreManager');
+var Sale=require('./Sale');
+var StoreOwner=require('./StoreOwner');
+var UserCart=require('./UserCart');
+var Store=require('./Store');
+var Coupons=require('./Coupons');
 
 
 module.exports = {
-
     get: function(type,item){
         if(type === 'Product'){
             return Product.get(item);
@@ -37,6 +44,8 @@ module.exports = {
     set: function(type,item){
         if(type === 'Product'){
             return Product.set(item);
+        if(type === 'User') {
+            return Users.set(item);
         }
         if(type == 'ProductInStore') {
             return ProductInStore.set(item);
@@ -130,9 +139,9 @@ module.exports = {
                 resolve(true);
             });
         return new Promise((resolve,reject)=>{
-            get('User',username)
+            Users.get({userName: username})
                 .then((result)=>{
-                    resolve(result.username == username && result.password == password);
+                    resolve(result[0].userName == username && result[0].password == password);
                 })
                 .catch((err)=>{reject(err);});
     });}
