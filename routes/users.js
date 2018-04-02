@@ -3,24 +3,22 @@ var router = express.Router();
 var DB = require('../DAL/DALManager');
 
 
-router.post('/login', function(req, res, next) {
-    if (req.body == undefined)
-    {
-        res.send('received empty body');
-        return;
-    }
-    if(DB.authentication(req.body.username,req.body.password)){
-        res.cookie('username', req.body.username, {maxAge: 900000, httpOnly: true});
-        res.cookie('password', req.body.password, {maxAge: 900000, httpOnly: true});
-        res.send('abcde');
-    }
-});
-
 router.get('/login', function(req, res, next) {
-    if(DB.authentication(req.query.username,req.query.password)){
-        res.cookie('username', req.query.username, {maxAge: 900000, httpOnly: true});
-        res.cookie('password', req.query.password, {maxAge: 900000, httpOnly: true});
-        res.send('abcde');
+    if(req.query.username==undefined||req.query.password==undefined){
+        res.send("username or password not inserted");
+    }
+    else{
+        DB.authentication(req.query.username,req.query.password)
+            .then((isExist)=>{
+                if(isExist){
+                    res.cookie('username', req.query.username, {maxAge: 900000, httpOnly: true});
+                    res.cookie('password', req.query.password, {maxAge: 900000, httpOnly: true});
+                    res.send('you are connected')
+                }
+                else{
+                    res.send('wrong username or password');
+                }
+        });
     }
 });
 

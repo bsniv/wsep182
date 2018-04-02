@@ -44,8 +44,7 @@ module.exports = {
             });
         return new Promise((resolve,reject)=>{
             get('User',username)
-                .then((result)=>
-                {
+                .then((result)=>{
                     resolve(result.username == username && result.password == password);
                 })
                 .catch((err)=>{reject(err);});
