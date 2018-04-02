@@ -134,17 +134,17 @@ module.exports = {
 
     },
     authentication: function(username,password){
-        if(username == 'admin' && password == 'admin')
-            return new Promise((resolve,reject)=>{
-                resolve(true);
-            });
         return new Promise((resolve,reject)=>{
             Users.get({userName: username})
                 .then((result)=>{
-                    resolve(result[0].userName == username && result[0].password == password);
+                    if(result.length>0)
+                        resolve(result[0].userName == username && result[0].password == password & result[0].isActive==1);
+                    else
+                        resolve(false);
                 })
                 .catch((err)=>{reject(err);});
-    });}
+        });
+    }
 
 }
 
