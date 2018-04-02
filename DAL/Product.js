@@ -3,6 +3,7 @@
  */
 var sqlite3 = require('sqlite3').verbose();
 
+
 module.exports = {
     get: function (item) {
         return new Promise((resolve,reject)=>{
@@ -45,7 +46,9 @@ module.exports = {
      */
     set: function(item){
             return new Promise((resolve,reject)=> {
+
                 var db = new sqlite3.Database('DataBase.db');
+
                 db.all("insert into Products\n" +
                     "(productName, basePrice)\n" +
                     "VALUES ('" + item.productName + "'," + item.basePrice + ");",
@@ -75,7 +78,8 @@ module.exports = {
             var db = new sqlite3.Database('DataBase.db');
             var querySting="UPDATE Products " +
                 "SET productName = '"+ item.productName +
-                "', basePrice = " + item.basePrice;
+                "', basePrice = " + item.basePrice
+            +" where productId = "+ item.productId ;
             db.all(querySting ,
                 function (err) {
                     if (err){
@@ -95,6 +99,11 @@ module.exports = {
                     }
                 });
             db.close();
+        });
+    },
+    remove: function(item){
+        return new Promise((resolve,reject)=>{
+            resolve("Not implemented method!");
         });
     }
     /**

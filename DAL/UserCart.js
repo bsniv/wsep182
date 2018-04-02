@@ -8,7 +8,7 @@ module.exports = {
         return new Promise((resolve,reject)=>{
             var db = new sqlite3.Database('DataBase.db');
         var all=0;
-        var queryString = "select * from UserCart where";
+        var queryString = "select * from UserCarts where";
         if(item.session!=null){
             queryString+=" session is '"+item.session+"'";
             all++;
@@ -30,7 +30,7 @@ module.exports = {
 
         if(all==0){
 
-            queryString = "select * from UserCart";
+            queryString = "select * from UserCarts";
         }
         db.all(queryString,function (err,rows){
             if(err){
@@ -48,7 +48,7 @@ module.exports = {
     set: function(item){
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
-            var queryString="insert into UserCart\n" +
+            var queryString="insert into UserCarts\n" +
                 "(session, saleId, amount)\n" +
                 "VALUES ('" + item.session + "'," + item.saleId+"," + item.amount +");";
         db.all(queryString,
@@ -57,7 +57,7 @@ module.exports = {
                     reject(queryString);
                 }
                 else{
-                    db.all("select * from UserCart where session is '"+item.session+"' and saleId = "+item.saleId,
+                    db.all("select * from UserCarts where session is '"+item.session+"' and saleId = "+item.saleId,
                         function(err,rows){
                             if(err){
                                 reject("error");
@@ -77,7 +77,7 @@ module.exports = {
     update: function(item){
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
-        var querySting="UPDATE UserCart " +
+        var querySting="UPDATE UserCarts " +
             "SET amount = " + item.amount+
             " where saleId = " + item.saleId +" and session is '"+ item.session+"'";
         db.all(querySting ,
@@ -86,7 +86,7 @@ module.exports = {
                     reject(querySting);
                 }
                 else{
-                    db.all("select * from UserCart where saleId = " + item.saleId +" and session is '"+ item.session+"'",
+                    db.all("select * from UserCarts where saleId = " + item.saleId +" and session is '"+ item.session+"'",
                         function(err,rows){
                             if(err){
                                 reject("error");
@@ -106,7 +106,7 @@ module.exports = {
     remove: function(item){
         return new Promise((resolve,reject)=>{
             var db=new sqlite3.Database('DataBase.db');
-        db.all("DELETE from UserCart where saleId = "+item.saleId +" and session is'"+item.session+"'" , function(err){
+        db.all("DELETE from UserCarts where saleId = "+item.saleId +" and session is'"+item.session+"'" , function(err){
             if(err){
                 resolve("error");
                 return;
