@@ -3,6 +3,7 @@ var router = express.Router();
 var DB = require('../DAL/DALManager');
 
 
+
 router.post('/addProduct', function(req, res, next) {
     if (req.body == undefined)
     {

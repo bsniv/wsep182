@@ -15,7 +15,16 @@ router.get('/', function(req, res, next) {
  * and a new owner to that store
  * only logged in user can create stores
  */
-router.post('/', function(req, res, next) {
+router.post('/createShop', function(req, res, next) {
+    if (req.query.storeName == undefined)
+    {
+        res.send('didnt receive userName');
+        return;
+    }
+    if(req.cookies.username==undefined||req.cookies.password==undefined) {
+        res.send('Youre not logged in');
+        return;
+    }
     DB.authentication(req.cookies.userName,req.cookies.Password)
         .then(
             (isExist)=> {

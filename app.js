@@ -11,6 +11,7 @@ var generate_key = function() {
     return sha.digest('hex');
 };
 
+var productInStoreRouter= require('./routes/productInStore');
 var usersRouter = require('./routes/users');
 var storeRouter = require('./routes/store');
 var cartRouter = require('./routes/cart');
@@ -40,6 +41,7 @@ app.use(function(req,res,next){
 app.use('/users', usersRouter);
 app.use('/store',storeRouter);
 app.use('/userCart',cartRouter);
+app.use('/ProductInStore',productInStoreRouter);
 
 
 // catch 404 and forward to error handler

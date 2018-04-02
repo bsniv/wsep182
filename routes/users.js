@@ -96,16 +96,16 @@ router.delete('/delete', function(req, res, next) {
     DB.get('User',{userName: req.cookies.username})
         .then((user)=>{
         if(user && req.cookies.password == user.password){
-                if (user.isAdmin || user.username = res.query.userName) {
+                if (user.isAdmin==true || user.username == res.query.userName) {
                     DB.remove('User', {userName: req.cookies.username, password: req.cookies.password})
-                        .then((result) = > {
+                        .then((result) => {
                         if(result) {
                             res.send("The User has been removed")
                         }
                         else{res.send("ERR: cant remove user")
                     }
                     })
-                    .catch((err) = > {res.send(err);
+                    .catch((err) => {res.send(err);
                     });
                 }
                 else res.send("trying to delete a user without permissions");

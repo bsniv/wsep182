@@ -4,7 +4,7 @@ var Product=require('./Product');
 var ProductInStore=require('./ProductInStore');
 var StoreManager=require('./StoreManager');
 var Sale=require('./Sale');
-var StoreOwner=require('./StoreOwner');
+var StoreOwner=require('./StoreOwners');
 var UserCart=require('./UserCart');
 var Store=require('./Store');
 var Coupons=require('./Coupons');
@@ -42,8 +42,9 @@ module.exports = {
 
     },
     set: function(type,item){
-        if(type === 'Product'){
+        if(type === 'Product') {
             return Product.set(item);
+        }
         if(type === 'User') {
             return Users.set(item);
         }
@@ -71,7 +72,6 @@ module.exports = {
         if(type == 'Coupons'){
             return Coupons.set(item);
         }
-
     },
     update: function(type,item){
         if(type === 'Product'){
