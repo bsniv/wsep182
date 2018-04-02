@@ -53,12 +53,13 @@ module.exports = {
     set: function(item){
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
-        db.all("insert into Coupons\n" +
-            "(couponId, productInStoreId, percentage, dueDate)\n" +
-            "VALUES ('" + item.couponId + "'," + item.productInStoreId + "'," + item.percentage + "'," + item.dueDate + ");",
+            var queryString="insert into Coupons\n" +
+                "(couponId, productInStoreId, percentage, dueDate)\n" +
+                "VALUES ('" + item.couponId + "'," + item.productInStoreId + "," + item.percentage + ",'" + item.dueDate + "');";
+        db.all(queryString,
             function (err) {
                 if (err){
-                    reject("error");
+                    reject(queryString);
                 }
                 else{
                     db.all("SELECT * FROM Coupons where couponId is '"+item.couponId+"'" ,function(err,rows){
@@ -80,10 +81,10 @@ module.exports = {
     update: function(item){
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
-        var querySting="UPDATE Coupons " +dueDate
+        var querySting="UPDATE Coupons " +
             "SET percentage = "+ item.percentage +
-            ", dueDate = "+ item.dueDate +
-            " where couponId is '"+item.couponId+"'";
+            ", dueDate = '"+ item.dueDate +
+            "' where couponId is '"+item.couponId+"'";
         db.all(querySting ,
             function (err) {
                 if (err){
@@ -109,8 +110,8 @@ module.exports = {
     remove: function(item){
         return new Promise((resolve,reject)=>{
             var db=new sqlite3.Database('DataBase.db');
-        var querySting="DELETE from StoreManagers " +
-            "where storeId = "+item.storeId+" and userName is '" + item.userName + "' and privilege = " + item.privilege;
+        var querySting="DELETE from Coupons " +
+            "where couponId is '"+item.couponId+"'";
         db.all(querySting, function(err){
             if(err){
                 resolve("error");

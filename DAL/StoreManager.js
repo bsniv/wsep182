@@ -70,30 +70,35 @@ module.exports = {
     /**
      *
      */
+    // update: function(item){
+    //     return new Promise((resolve,reject)=> {
+    //         var db = new sqlite3.Database('DataBase.db');
+    //     var querySting="UPDATE StoreManagers " +
+    //         "SET privilege = "+ item.privilege +
+    //         " where storeId = "+item.storeId+" and userName is '" + item.userName + "' and privilege = " + item.privilege;
+    //     db.all(querySting ,
+    //         function (err) {
+    //             if (err){
+    //                 reject(querySting);
+    //             }
+    //             else{
+    //                 db.all("SELECT * FROM StoreManagers where storeId = "+item.storeId+" and userName is '" + item.userName + "' and privilege = " + item.privilege ,function(err,rows){
+    //                     if(err){
+    //                         reject("error");
+    //                     }
+    //                     else{
+    //                         resolve(rows);
+    //                     }
+    //                 });
+    //             }
+    //         });
+    //     db.close();
+    // });
+    // },
     update: function(item){
-        return new Promise((resolve,reject)=> {
-            var db = new sqlite3.Database('DataBase.db');
-        var querySting="UPDATE StoreManagers " +
-            "SET privilege = "+ item.privilege +
-            "where storeId = "+item.storeId+" and userName is '" + item.userName + "' and privilege = " + item.privilege;
-        db.all(querySting ,
-            function (err) {
-                if (err){
-                    reject(querySting);
-                }
-                else{
-                    db.all("SELECT * FROM StoreManagers where storeId = "+item.storeId+" and userName is '" + item.userName + "' and privilege = " + item.privilege ,function(err,rows){
-                        if(err){
-                            reject("error");
-                        }
-                        else{
-                            resolve(rows);
-                        }
-                    });
-                }
-            });
-        db.close();
-    });
+      return new Promise((resolve,reject)=>{
+          resolve("Not implemented method!");
+      });
     },
     /**
      *

@@ -35,7 +35,7 @@ module.exports = {
             all++;
         }
         if(all==0){
-            queryString = "select * from Products";
+            queryString = "select * from Sales";
         }
         db.all(queryString,function (err,rows){
             if(err){
@@ -64,12 +64,12 @@ module.exports = {
                             reject("error");
                         }
                         else {
-                            db.all("SELECT * FROM Sales ORDER BY productInStoreId DESC LIMIT 1", function (err, rows) {
+                            db.all("SELECT * FROM Sales ORDER BY saleId DESC LIMIT 1", function (err, rows) {
                                 if (err) {
                                     reject("error");
                                 }
                                 else {
-                                    resolve(rows[0]);
+                                    resolve(rows);
                                 }
                             })
                         }
@@ -79,7 +79,7 @@ module.exports = {
             var querySting="UPDATE Sales " +
                 "SET amount = amount + "+ item.amount +
                 " where productInStoreId = " + item.productInStoreId
-                +" and typeOfSale is '"+item.typeOfSale+"'";
+                +" and typeOfSale = "+item.typeOfSale;
             db.all(querySting,function(err){
                 if(err){
                     reject("error");
@@ -108,9 +108,9 @@ module.exports = {
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
         var querySting="UPDATE Sales " +
-            "SET amount = '"+ item.amount +
+            "SET amount = "+ item.amount +
             " where productInStoreId = " + item.productInStoreId
-            +" and typeOfSale is '"+ item.typeOfSale+"'";
+            +" and typeOfSale = "+ item.typeOfSale;
         db.all(querySting ,
             function (err) {
                 if (err){
@@ -118,7 +118,7 @@ module.exports = {
                 }
                 else{
                     db.all("select * from Sales where productInStoreId = "+item.productInStoreId+" and " +
-                        "typeOfSale is '"+item.typeOfSale+"'",
+                        "typeOfSale ="+item.typeOfSale,
                         function(err,rows){
                             if(err){
                                 reject("error");
@@ -139,7 +139,7 @@ module.exports = {
         return new Promise((resolve,reject)=>{
             var db=new sqlite3.Database('DataBase.db');
         db.all("DELETE from Sales where productInStoreId = "+item.productInStoreId+" and " +
-            "typeOfSale is '"+item.typeOfSale+"'", function(err){
+            "typeOfSale = "+item.typeOfSale, function(err){
             if(err){
                 resolve("error");
                 return;
@@ -151,9 +151,10 @@ module.exports = {
     }
 };
 
-var getProductInStoreIdAndTypeOfSale =function(db,productInStoreId,tyopeOfSale){
+var getProductInStoreIdAndTypeOfSale =function(db,productInStoreId,typeOfSale){
     return new Promise((resolve,reject)=>{
-        db.all("SELECT * from Sales where productInStoreId = "+productInStoreId+" and typeOfSale is '"+typeOfSale+"'",function(err,rows){
+
+        db.all("SELECT * from Sales where productInStoreId = "+productInStoreId+" and typeOfSale = "+typeOfSale,function(err,rows){
 
         resolve(rows.length);
     });

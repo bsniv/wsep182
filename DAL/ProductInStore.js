@@ -8,7 +8,7 @@ module.exports = {
         return new Promise((resolve,reject)=>{
             var db = new sqlite3.Database('DataBase.db');
         var all=0;
-        var queryString = "select * from ProductsInStore where";
+        var queryString = "select * from ProductsInStores where";
         if(item.productInStoreId!=null){
             queryString+=" productInStoreId = "+item.productInStoreId;
             all++;
@@ -50,7 +50,7 @@ module.exports = {
         }
         if(all==0){
 
-            queryString = "select * from ProductsInStore";
+            queryString = "select * from ProductsInStores";
         }
         db.all(queryString,function (err,rows){
             if(err){
@@ -68,21 +68,21 @@ module.exports = {
     set: function(item){
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
-        db.all("insert into ProductsInStore\n" +
-            "(storeId, price, amount, isActive)\n" +
-            "VALUES (" + item.storeId + "," + item.price + "," + item.amount +"," + item.isActive +");",
+        db.all("insert into ProductsInStores\n" +
+            "(productId, storeId, price, amount, isActive)\n" +
+            "VALUES (" +item.productId+","+ item.storeId + "," + item.price + "," + item.amount +"," + item.isActive +");",
             function (err) {
                 if (err){
                     reject("error");
                 }
                 else{
-                    db.all("SELECT * FROM Products ORDER BY productInStoreId DESC LIMIT 1",
+                    db.all("SELECT * FROM ProductsInStores ORDER BY productInStoreId DESC LIMIT 1",
                         function(err,rows){
                         if(err){
                             reject("error");
                         }
                         else{
-                            resolve(rows[0]);
+                            resolve(rows);
                         }
                     })
                 }
@@ -96,7 +96,7 @@ module.exports = {
     update: function(item){
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
-        var querySting="UPDATE ProductsInStore " +
+        var querySting="UPDATE ProductsInStores " +
             "SET price = " + item.price+
             ", amount = " + item.amount+
             " where productInStoreId = " + item.productInStoreId +" and productId = " + item.productId;
@@ -106,7 +106,7 @@ module.exports = {
                     reject(querySting);
                 }
                 else{
-                    db.all("select * from ProductsInStore where productInStoreId = "+item.productInStoreId+" and productId = "+item.productId,
+                    db.all("select * from ProductsInStores where productInStoreId = "+item.productInStoreId+" and productId = "+item.productId,
                         function(err,rows){
                             if(err){
                                 reject("error");
@@ -127,7 +127,7 @@ module.exports = {
     remove: function(item){
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
-        var querySting="UPDATE ProductsInStore " +
+        var querySting="UPDATE ProductsInStores " +
             "SET isActive = 0" +
             " where productInStoreId = " + item.productInStoreId +" and productId = " + item.productId;
         db.all(querySting ,
