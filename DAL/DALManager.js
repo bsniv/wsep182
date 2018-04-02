@@ -1,9 +1,8 @@
 
-var Product=require('./Product');
+var Users=require('./Users');
 
 
 module.exports = {
-
     get: function(type,item){
         if(type === 'User'){
             return Users.get(item);
@@ -14,7 +13,7 @@ module.exports = {
     },
     set: function(type,item){
         if(type === 'User') {
-            return Product.set(item);
+            return Users.set(item);
         }
         return new Promise((resolve,reject)=>{
             resolve(item);
@@ -50,9 +49,9 @@ module.exports = {
                 resolve(true);
             });
         return new Promise((resolve,reject)=>{
-            get('User',username)
+            Users.get({userName: username})
                 .then((result)=>{
-                    resolve(result.username == username && result.password == password);
+                    resolve(result[0].userName == username && result[0].password == password);
                 })
                 .catch((err)=>{reject(err);});
     });}

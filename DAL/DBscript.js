@@ -1,7 +1,7 @@
         var DB = require('../DAL/DALManager');
         var sqlite3 = require('sqlite3').verbose();
         var createTables = function() {
-        var db = new sqlite3.Database('DataBase.db');
+        var db = new sqlite3.Database('../bin/DataBase.db');
         db.serialize(function() {
         db.run("CREATE TABLE IF NOT EXISTS Users "+
             "( userName varchar(15) PRIMARY KEY, password varchar(15),isActive Integer DEFAULT 1)");
