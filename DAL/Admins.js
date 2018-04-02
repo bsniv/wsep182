@@ -44,7 +44,7 @@ module.exports = {
                             reject("error2");
                         }
                         else{
-                            resolve(rows[0]);
+                            resolve(rows);
                         }
                     })
                 }

@@ -7,7 +7,7 @@ module.exports = {
             var db = new sqlite3.Database('DataBase.db');
         db.run("PRAGMA foreign_keys = ON;");
         var all=0;
-        var queryString = "select * from Store where";
+        var queryString = "select * from Stores where";
         if(item.storeId!=null){
             queryString+=" storeId is '"+item.storeId+"'";
             all++;
@@ -75,13 +75,12 @@ module.exports = {
         return new Promise((resolve,reject)=> {
             var db = new sqlite3.Database('DataBase.db');
         db.run("PRAGMA foreign_keys = ON;");
-        db.all("UPDATE Stores \n"
-            +" (storeName) "
+        db.all("UPDATE Stores "
             +"SET storeName = '"+item.storeName + "'\n"
             +"WHERE storeId = '"+item.storeId+"'",
             function (err) {
                 if (err){
-                    reject("error");
+                    reject(err);
                 }
                 else{
                     db.all("select * from Stores where storeId = '"+item.storeId+"' and " +

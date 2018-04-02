@@ -8,7 +8,6 @@ router.get('/', function(req, res, next) {
         .then((stores)=>{
             res.send(stores);
         });
-
 });
 /**
  * create new store

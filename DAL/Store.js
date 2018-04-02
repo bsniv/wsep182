@@ -57,7 +57,7 @@ module.exports = {
                             reject("error2");
                         }
                         else{
-                            resolve(rows[0]);
+                            resolve(rows);
                         }
                     })
                 }
@@ -85,7 +85,7 @@ module.exports = {
                             reject("error");
                         }
                         else{
-                            resolve(rows[0]);
+                            resolve(rows);
                         }
                     })
                 }
