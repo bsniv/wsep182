@@ -5,16 +5,15 @@ var Product=require('./Product');
 module.exports = {
 
     get: function(type,item){
-        if(type === 'Product'){
-            return Product.get(item);
+        if(type === 'User'){
+            return Users.get(item);
         }
         return new Promise((resolve,reject)=>{
             resolve(item);
         });
-
     },
     set: function(type,item){
-        if(type === 'Product') {
+        if(type === 'User') {
             return Product.set(item);
         }
         return new Promise((resolve,reject)=>{
@@ -22,8 +21,16 @@ module.exports = {
         });
     },
     update: function(type,item){
-        if(type === 'Product') {
+        if(type === 'User') {
             return Product.update(item);
+        }
+        return new Promise((resolve,reject)=>{
+            resolve(item);
+        });
+    },
+    remove: function(type,item){
+        if(type === 'User') {
+            return Product.remove(item);
         }
         return new Promise((resolve,reject)=>{
             resolve(item);
