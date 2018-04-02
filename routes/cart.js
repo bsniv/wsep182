@@ -2,106 +2,118 @@ var express = require('express');
 var router = express.Router();
 var DB = require('../DAL/DALManager');
 
-/* GET users listing. */
+//CHANGE TO POST
+/* GET all the products in the cart. */
 router.get('/', function(req, res, next) {
-
     if(req.cookies.userName==undefined || req.cookies.Password==undefined) {
         cart={};
         cart.Session=req.cookies.session;
-        DB.get('Cart',cart)
-            .then((ArrayOfProduct)=>{resolve(ArrayOfProduct)});
+        DB.get('UserCart',cart)
+            .then((ArrayOfProduct)=>{
+                res.send(ArrayOfProduct)});
     }
     else{
-        DB.authentication(req.cookies.userName,req.cookies.Password)
+        DB.authentication(req.cookies.username,req.cookies.Password)
             .then((isExist)=>{
                 if(isExist){
                     cart={};
-                    cart.Session=req.cookies.userName;
+                    cart.Session=req.cookies.username;
                 }
                 else{
                     cart={};
                     cart.Session=req.cookies.session;
                 }
-                DB.get('Cart',cart)
-                    .then((ArrayOfProduct)=>{resolve(ArrayOfProduct)});
-
+                DB.get('UserCart',cart)
+                    .then((ArrayOfProduct)=>{res.send(ArrayOfProduct)});
         });
-
     }
-
 });
 
-router.post('/', function(req, res, next) {
-    if(req.cookies.userName==undefined || req.cookies.Password==undefined) {
-        cart={};
-        cart.Session=req.cookies.session;
-        cart.productInStoreId=req.body.productInStoreId
-        DB.set('Cart',cart)
-            .then((ArrayOfProduct)=>{
-                if(ArrayOfProduct){resolve("Product has added to cart")}
-                else{resolve("ERR: could not add product to cart")}
-            });
+
+//CHANGE TO POST
+/* add products to the cart. */
+router.get('/addProductToCart', function(req, res, next) {
+    if (req.query.saleId == undefined || req.query.Amount == undefined)
+    {
+        res.send("missing variables in request, productInStoreId and amount needed");
+        return;
+    }
+    if(req.cookies.username==undefined || req.cookies.password==undefined) {
+        DB.set('UserCart',{saleId: req.query.saleId, amount: req.query.Amount, session: req.cookies.session})
+            .then((success)=>{
+                if (success)
+                    res.send("product added to cart")});
     }
     else{
-        DB.authentication(req.cookies.userName,req.cookies.Password)
+        DB.authentication(req.cookies.username,req.cookies.password)
             .then((isExist)=>{
-            if(isExist){
-                cart={};
-                cart.Session=req.cookies.userName;
-            }
-            else{
-                cart={};
-                cart.Session=req.cookies.session;
-             }
-            DB.set('Cart',cart)
-                .then((ArrayOfProduct)=>{
-                if(ArrayOfProduct){resolve("Product has added to cart")}
-                else{resolve("ERR: could not add product to cart")}
-            });
-
-        });
-
+                if(isExist){
+                    session=req.cookies.username;
+                }
+                else{
+                    session=req.cookies.session;
+                }
+            DB.set('UserCart',{saleId: req.query.saleId, amount: req.query.Amount, session: session})
+                .then((success)=>{
+                if (success)
+                res.send("product added to cart")});
+    });
     }
-
 });
 
-router.delete('/', function(req, res, next) {
-    cart={};
-    if(req.body.productInStoreId==undefined){
-       res.send("ERR: productInStoreId not sent");
+
+
+/* update cart. */
+router.put('/updateProductsInCart', function(req, res, next) {
+    if (req.query.saleId == undefined || req.query.Amount == undefined)
+    {
+        res.send("missing variables in request, productInStoreId and amount needed");
+        return;
+    }
+    if(req.cookies.username==undefined || req.cookies.password==undefined) {
+        updateCart(req,res,req.query.saleId,req.query.Amount,req.cookies.session);
     }
     else{
-        cart.productInStoreId=req.body.productInStoreId
-        if(req.cookies.userName==undefined || req.cookies.Password==undefined) {
-            cart.Session=req.cookies.session;
-            DB.remove('Cart',cart)
-                .then((isRemoved)=>{
-                    if(isRemoved){
-                        res.send("The product has been removed from cart")
-                    }
-                    else{
-                        res.send("ERR: faild to remove product from cart");
-                    }
+        DB.authentication(req.cookies.username,req.cookies.password)
+            .then((isExist)=>{
+                if(isExist){
+                    session=req.cookies.username;
+                }
+                else{
+                    session=req.cookies.session;
+                }
+                updateCart(req,res,req.query.saleId,req.query.Amount,session);
             });
-        }
-        else {
-            DB.authentication(req.cookies.userName,req.cookies.Password)
-                .then((isExist)=>{
-                    if(isExist){
-                        cart.Session=req.cookies.userName;
-                    }
-                    else{
-                        cart.Session=req.cookies.session;
-                    }
-                    DB.remove('Cart',cart)
-                        .then((isRemoved)=>{
-                        if(isRemoved){resolve("The product has been removed from cart")}
-                        else{resolve("ERR: faild to remove product from cart")}});
-            });
-        }
-
     }
-
 });
+
+function updateCart(req, res, saleId, amount, session){
+    if (amount == 0)
+    {
+        DB.get('UserCart', {saleId: saleId}).then((isExist) => {
+            if(isExist) {
+                DB.remove('UserCart', {saleId: saleId, session: session})
+                    .then((success) => {
+                    if(success)
+                    res.send("product removed from cart")
+            })
+                ;
+            }
+        });
+    }
+    else {
+        DB.get('UserCart', {saleId: saleId}).then((isExist) => {
+            if(isExist) {
+                DB.update('UserCart', {saleId: saleId, amount: amount, session: session})
+                    .then((success) => {
+                    if(success)
+                    res.send("cart updated")
+            })
+                ;
+            }
+        });
+    }
+}
+
 
 module.exports = router;
