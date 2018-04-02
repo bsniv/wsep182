@@ -49,6 +49,9 @@ module.exports = {
             var returnValue = [];
             var i = 0;
             var j=0;
+            if(rows.length==0){
+                resolve([]);
+            }
             rows.forEach((user)=>{
                 var query = "SELECT * FROM Admins WHERE userName is '"+user.userName+"'";
                 db.all(query,function(err,ans){
@@ -64,8 +67,10 @@ module.exports = {
                         }
                     }
                     j++;
-                    if(j==rows.length)
+                    if(j==rows.length) {
                         resolve(returnValue);
+                        return;
+                    }
                 });
             });
 
@@ -97,7 +102,7 @@ module.exports = {
                                 reject("error2");
                             }
                             else{
-                                resolve(rows[0]);
+                                resolve(rows);
                             }
                         })
                     }
@@ -125,7 +130,7 @@ module.exports = {
                             reject("error");
                         }
                         else{
-                            resolve(rows[0]);
+                            resolve(rows);
                         }
                     })
                 }
@@ -145,6 +150,9 @@ module.exports = {
             function (err) {
                 if (err){
                     reject("error");
+                }
+                else{
+                    resolve(true);
                 }
             });
         db.close();

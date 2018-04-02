@@ -4,14 +4,14 @@ var DB = require('../DAL/DALManager');
 
 
 router.get('/login', function(req, res, next) {
-    if(req.query.username==undefined||req.query.password==undefined){
+    if(req.query.userName==undefined||req.query.password==undefined){
         res.send("username or password not inserted");
     }
     else{
-        DB.authentication(req.query.username,req.query.password)
+        DB.authentication(req.query.userName,req.query.password)
             .then((isExist)=>{
                 if(isExist){
-                    res.cookie('username', req.query.username, {maxAge: 900000, httpOnly: true});
+                    res.cookie('username', req.query.userName, {maxAge: 900000, httpOnly: true});
                     res.cookie('password', req.query.password, {maxAge: 900000, httpOnly: true});
                     res.send('you are connected')
                 }
@@ -31,7 +31,7 @@ router.post('/register', function(req, res, next) {
         return;
     }
     if(req.cookies.username==undefined||req.cookies.password==undefined){
-        DB.set('User',{userName:req.body.userName, password: req.body.password})
+        DB.set('User',{userName:req.body.userName, password: req.body.password, isActive:1})
             .then((result)=>{
                 if(result){res.send("The User has been Added")}
                 else{res.send("ERR: cant add user")}
@@ -45,7 +45,7 @@ router.post('/register', function(req, res, next) {
                     res.send("you allready have a user");
                 }
                 else{
-                    DB.set('User',{userName:req.body.userName, password: req.body.password})
+                    DB.set('User',{userName:req.body.userName, password: req.body.password, isActive:1})
                     .then((result)=>{
                                 if(result){res.send("The User has been Added")}
                                 else{res.send("ERR: cant add user")}
@@ -69,17 +69,20 @@ router.put('/update', function(req, res, next) {
         res.send('Youre not logged in');
         return;
     }
-        DB.authentication(req.cookies.username,req.cookies.password)
+    DB.authentication(req.cookies.username,req.cookies.password)
         .then((isExist)=>{
         if(isExist){
-            DB.update('User',{userName:req.cookies.username, password: req.body.password})
+            DB.update('Users',{userName:req.cookies.username, password: req.body.password})
             .then((result)=>{
-                if(result){res.send("The User has been Added")}
+                if(result){res.send("The Password has been updated")}
                 else{res.send("ERR: cant add user")}
             })
         .catch((err)=>{res.send(err);});
-    }
-    });
+        }
+        else{
+            res.send("you are not connected");
+        }
+    }).catch((err)=>res.send(err));
 
 });
 
@@ -93,11 +96,11 @@ router.delete('/delete', function(req, res, next) {
         res.send('Youre not logged in');
         return;
     }
-    DB.get('User',{userName: req.cookies.username})
+    DB.get('Users',{userName: req.cookies.username})
         .then((user)=>{
-        if(user && req.cookies.password == user.password){
-                if (user.isAdmin==true || user.username == res.query.userName) {
-                    DB.remove('User', {userName: req.cookies.username, password: req.cookies.password})
+        if(user && user[0].isActive==1 && req.cookies.password == user[0].password){
+                if (user[0].isAdmin==1 || user[0].userName == req.query.userName) {
+                    DB.remove('Users', {userName: req.query.userName})
                         .then((result) => {
                         if(result) {
                             res.send("The User has been removed")
@@ -111,15 +114,8 @@ router.delete('/delete', function(req, res, next) {
                 else res.send("trying to delete a user without permissions");
         }
         else res.send("not logged in");
-    });
+    })
+    .catch((err)=>res.send(err));
 });
-
-
-function validateAdminSession(username, password){
-    if(DB.authentication(username,password))
-        if(DB.get('User',username).isAdmin == true)
-            return true;
-    return false;
-}
 
 module.exports = router;
